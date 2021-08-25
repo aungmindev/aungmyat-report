@@ -11,9 +11,10 @@
     ],
     "minimum-stability": "dev",
     "require": {
+        "maatwebsite/excel": "^3.1"
     },
     "require-dev": {
-        "maatwebsite/excel": "^3.1"
+       
     },
     "autoload": {
         "psr-4": {
