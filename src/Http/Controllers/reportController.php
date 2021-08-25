@@ -34,7 +34,8 @@ class reportController extends Controller
         $query = 'select name,email from users';
         $filename = uniqid().'_ViberReport.xlsx';
         $columns = ['name','email'];
-        reportQueueAm::dispatch($query,$filename,$columns)
+        $senderemail = 'ptech731@gmail.com';
+        reportQueueAm::dispatch($query,$filename,$columns,$senderemail)
                     ->delay(now()->addSeconds(5));
         return view('report::mailsend');
     }

@@ -28,12 +28,14 @@ class reportQueueAm implements ShouldQueue
     protected $filename;
     protected $columns;
     protected $extra;
-    public function __construct($query,$filename,$columns,$extra = [])
+    protected $senderemail;
+    public function __construct($query,$filename,$columns,$senderemail,$extra = [])
     {
         $this->query = $query;
         $this->filename = $filename;
         $this->columns = $columns;
         $this->extra = $extra;
+        $this->senderemail = $senderemail;
     }
 
     /**
@@ -45,8 +47,8 @@ class reportQueueAm implements ShouldQueue
     {
     //    Log::debug($this->columns);
          
-          Excel::store(new ReportExcelAm($this->query,$this->columns,$this->extra), $this->filename);
-        Mail::to('aungmyatmin284@gmail.com')->send(new MailReportByAm($this->filename));
+        Excel::store(new ReportExcelAm($this->query,$this->columns,$this->extra), $this->filename);
+        Mail::to($this->senderemail)->send(new MailReportByAm($this->filename));
 
     }
 }

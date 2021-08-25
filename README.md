@@ -13,7 +13,6 @@
      * Set up driver for QueueConnection in .env {Change => database}
      * Run (php artisan queue:table)
      * Run (php artisan migrate)
-     * Run (php artisan make:job reportQueueAm)
 
 4 . Usage
       public function method()
@@ -22,8 +21,9 @@
         $query    = 'Your raw query as text';
         $filename = 'filename;
         $columns  = ['name','email'];
+        $senderemail  = 'blabla@gmail.com;
 
-        reportQueueAm::dispatch($query,$filename,$columns)->delay(now()->addSeconds(5));
+        reportQueueAm::dispatch($query,$filename,$columns,$senderrmail)->delay(now()->addSeconds(5));
         return 'something';
     }
      
