@@ -7,6 +7,6 @@
     <title>Document</title>
 </head>
 <body>
-    <h4>The body of your message</h4>
+    <h4>Dear Valuable customer , we have sent your report.Thanks.</h4>
 </body>
 </html>

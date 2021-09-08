@@ -7,6 +7,7 @@ use App\Models\User;
 use Aungmyat\Report\Exports\ReportExcelAm;
 use Aungmyat\Report\Jobs\reportQueueAm;
 use Aungmyat\Report\Mail\MailReportByAm;
+use Aungmyat\Report\Process_provider\reportingProcess;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -31,13 +32,13 @@ class reportController extends Controller
     public function sendmail()
     {
   
-        $query = 'select name,email from users';
-        $filename = uniqid().'_ViberReport.xlsx';
-        $columns = ['name','email'];
+        $query       = 'select name,email from users';
+        $filename    = uniqid().'_ViberReport.xlsx';
+        $columns     = ['name','email'];
         $senderemail = 'ptech731@gmail.com';
-        reportQueueAm::dispatch($query,$filename,$columns,$senderemail)
-                    ->delay(now()->addSeconds(5));
-        return view('report::mailsend');
+        $limit       = 0;
+        $subject     = 'Aungmyat/Report';
+        return reportingProcess::process($query,$filename,$columns,$senderemail,$limit,$subject);
     }
 
     /**

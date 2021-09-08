@@ -17,9 +17,11 @@ class MailReportByAm extends Mailable
      * @return void
      */
     protected  $filename;
-    public function __construct($filename)
+    public  $subject;
+    public function __construct($filename,$subject)
     {
         $this->filename = $filename;
+        $this->subject = $subject;
     }
 
     /**
@@ -30,6 +32,8 @@ class MailReportByAm extends Mailable
     public function build()
     {
         return $this->markdown('report::mailtem')
-                     ->attach(storage_path('app/'.$this->filename));
+                     ->attach(storage_path('app/'.$this->filename))
+                     ->subject($this->subject);
+
     }
 }

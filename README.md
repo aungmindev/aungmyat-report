@@ -15,16 +15,23 @@
      * Run (php artisan migrate)
 
 4 . Usage
+      use Aungmyat\Report\Process_provider\reportingProcess;
       public function method()
-    {
+
+     {
   
         $query    = 'Your raw query as text';
-        $filename = 'filename;
+        $filename = 'filename.xlsx';
         $columns  = ['name','email'];
-        $senderemail  = 'blabla@gmail.com;
+        $senderemail  = 'blabla@gmail.com';
+        $limit       = 0;  //Optional 
+        
+       //# This parameter($limit) will decide to download your report from browser if your
+           report  data is less than your limit.if not so, it will send from email. 
 
-        reportQueueAm::dispatch($query,$filename,$columns,$senderrmail)->delay(now()->addSeconds(5));
-        return 'something';
+        $subject     = 'Your email subject';
+
+        return reportingProcess::process($query,$filename,$columns,$senderemail,$limit, $subject);
     }
      
 
