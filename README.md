@@ -15,8 +15,12 @@
      * Run (php artisan migrate)
 
 4 . Usage
-      use Aungmyat\Report\Process_provider\reportingProcess;
-      public function method()
+      
+      
+      * use Aungmyat\Report\Process_provider\reportingProcess;
+      
+      
+    public function method()
 
      {
   
