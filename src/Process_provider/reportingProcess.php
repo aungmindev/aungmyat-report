@@ -15,11 +15,12 @@ class reportingProcess{
 
    public static function process($query,$filename,$columns,$senderemail,$limit = false,$subject ,$extra = '')
    {
-    $checkquery = trim(trim($query) , ';').' limit '.$limit;      
+      $overlimit = intval($limit) + 5;
+    $checkquery = trim(trim($query) , ';').' limit '.$overlimit;      
     $checkqueryCount = DB::select(DB::raw("$checkquery"));
      if($limit == false || count($checkqueryCount) > $limit){
         reportQueueAm::dispatch($query,$filename,$columns,$senderemail,$subject)
-        ->delay(now()->addSeconds(5));
+        ->delay(now()->addSeconds(3));
         return redirect()->back();
      }else{
         return Excel::download(new ReportExcelAm($query,$columns,$extra), $filename);
