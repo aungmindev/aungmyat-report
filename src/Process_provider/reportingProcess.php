@@ -17,7 +17,9 @@ class reportingProcess{
    {
       $overlimit = intval($limit) + 5;
     $checkquery = trim(trim($query) , ';').' limit '.$overlimit;      
-    $checkqueryCount = DB::select(DB::raw("$checkquery"));
+   //  $checkqueryCount = DB::select(DB::raw("$checkquery"));
+   //update the syntax for updated laravel 11
+    $checkqueryCount = DB::select($checkquery);
      if($limit == false || count($checkqueryCount) > $limit){
         reportQueueAm::dispatch($query,$filename,$columns,$senderemail,$subject)
         ->delay(now()->addSeconds(3));
