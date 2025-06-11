@@ -26,7 +26,7 @@ class ReportExcelAm implements FromCollection , WithHeadings
    
     public function collection()
     {
-        $data = DB::select(DB::raw($this->query));
+        $data = DB::select($this->query);
        return collect($data);
     }
 
