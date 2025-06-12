@@ -13,20 +13,18 @@ class reportingProcess{
        
    }
 
-   public static function process($query,$filename,$columns,$senderemail,$limit = false,$subject ,$extra = '')
+   public static function process($filename,$columns,$senderemail,$limit = false,$subject ,$extra = '',$main_table = null , $join_tables = [])
    {
       $overlimit = intval($limit) + 5;
-    $checkquery = trim(trim($query) , ';').' limit '.$overlimit;      
-   //  $checkqueryCount = DB::select(DB::raw("$checkquery"));
-   //update the syntax for updated laravel 11
-    $checkqueryCount = DB::select($checkquery);
+      $checkquery = DB::table($main_table)->limit($overlimit)->get();     
+      //update the syntax for updated laravel 11
     
-     if($limit == false || count($checkqueryCount) > $limit){
-        reportQueueAm::dispatch($query,$filename,$columns,$senderemail,$subject)
-        ->delay(now()->addSeconds(3));
-        return redirect()->back();
-     }else{
-        return Excel::download(new ReportExcelAm($query,$columns,$extra), $filename);
-     }
+      if($limit == false || $checkquery->count() > $limit){
+         reportQueueAm::dispatch($filename,$columns,$senderemail,$subject)
+         ->delay(now()->addSeconds(3));
+         return redirect()->back();
+      }else{
+         return Excel::download(new ReportExcelAm($columns,$extra, $main_table , $join_tables), $filename);
+      }
    }
 }
