@@ -20,36 +20,57 @@ class ReportExcelAm implements FromCollection , WithHeadings
     protected $extra;
     protected $join_tables;
     protected $main_table;
-
-    public function __construct($columns,$extra = [] , $main_table = null ,  $join_tables = []){
+    protected $query;
+    public function __construct($columns,$extra = [] , $main_table = null ,  $join_tables = [],$query = null){
         $this->columns = $columns;
         $this->extra = $extra;
         $this->join_tables = $join_tables;
         $this->main_table = $main_table;
+        $this->query = $query;
     }
    
     public function collection()
     {
+        if($this->query != null){
+            $data = DB::select($this->query);
+            return collect($data);
+        }else{
+            $query = DB::table($this->main_table);
+            $this->applyJoins($query, $this->main_table, $this->join_tables);
+            $this->applyFilters($query, $this->extra);
+            $data = $query->select($this->columns)->get();
+            return collect($data);
+        }
         
-        $query = DB::table($this->main_table);
-        $this->applyJoins($query, $this->main_table, $this->join_tables);
-        $data = $query->select($this->columns)->get();
-        return collect($data);
     }
 
     protected function applyJoins(&$query, $main_table, $join_tables)
     {
         if(!empty($join_tables)){
             foreach($join_tables as $join_table){
-                $data = $query
-                      ->leftJoin($join_table['table_name'], $main_table.'.'.$join_table['foreign_key'], '=', $join_table['table_name'].'.id')
-                      ->select();
+                $query->leftJoin($join_table['table_name'], $main_table.'.'.$join_table['foreign_key'], '=', $join_table['table_name'].'.id');
+                
                 if(!empty($join_table['nested_join'])){
                     $this->applyJoins($query, $join_table['table_name'], $join_table['nested_join']);
                 }
             }
         }
 
+    }
+
+    protected function applyFilters(&$query, $extra)
+    {
+        if(!empty($extra)){
+            foreach ($extra as $field => $condition) {
+                // If it's a date range filter
+                if (is_array($condition) && isset($condition['start_date'], $condition['end_date'])) {
+                    $query->where("{$this->main_table}.{$field}", '>=', $condition['start_date'])
+                        ->where("{$this->main_table}.{$field}", '<=', $condition['end_date']);
+                } else {
+                    $query->where("{$this->main_table}.{$field}", $condition);
+                }
+            }
+       }
     }
 
     public function headings() : array
